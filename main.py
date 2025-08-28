@@ -20,7 +20,7 @@ from utils.config_manager import ConfigManager
 from notifications.notifier import Notifier
 
 # ASCII Art Banner
-BANNER = """
+BANNER = r"""
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
 ║     $$$$$$\              $$\                                 ║
