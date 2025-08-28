@@ -8,6 +8,7 @@ from cryptography.fernet import Fernet
 from pathlib import Path
 import json
 import base64
+from typing import Optional, Dict
 
 
 class SecurityManager:
@@ -84,7 +85,31 @@ class SecurityManager:
             print(f"❌ Failed to decrypt credentials for {exchange}: {e}")
             return {"api_key": "", "api_secret": ""}
     
-    def validate_api_key_permissions(self, exchange: str, api_key: str) -> bool:
+    def get_api_credentials(self, exchange: str) -> Optional[Dict]:
+        """Get decrypted API credentials for an exchange"""
+        try:
+            if not self.credentials_file.exists():
+                return None
+            
+            with open(self.credentials_file, 'r') as f:
+                all_credentials = json.load(f)
+            
+            encrypted_creds = all_credentials.get(exchange)
+            if not encrypted_creds:
+                return None
+            
+            fernet = self._get_fernet()
+            
+            credentials = {
+                'api_key': fernet.decrypt(encrypted_creds['api_key'].encode()).decode(),
+                'api_secret': fernet.decrypt(encrypted_creds['api_secret'].encode()).decode()
+            }
+            
+            return credentials
+            
+        except Exception as e:
+            print(f"❌ Error decrypting credentials for {exchange}: {e}")
+            return None
         """Validate that API key has safe permissions (read-only preferred)"""
         # This would normally connect to the exchange and check permissions
         # For now, return True as mock validation

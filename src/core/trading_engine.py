@@ -7,10 +7,13 @@ import asyncio
 import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
-import random
 
-# Import our components (they'll be created as stubs for now)
+# Import our components
 from utils.logger import setup_logger, log_trade, log_performance
+from exchanges.exchange_manager import ExchangeManager
+from strategies.trading_strategies import ArbitrageStrategy, MomentumStrategy
+from risk_management.portfolio_manager import PortfolioManager, RiskManager
+from security.crypto_manager import SecurityManager
 
 
 class TradingEngine:
@@ -21,37 +24,39 @@ class TradingEngine:
         self.notifier = notifier
         self.logger = setup_logger("trading_engine")
         
-        # Trading state
+        # Core components
+        self.security_manager = SecurityManager()
+        self.exchange_manager = ExchangeManager(config_manager, self.security_manager)
+        self.portfolio_manager = PortfolioManager(config_manager)
+        self.risk_manager = RiskManager(config_manager, self.portfolio_manager)
+        
+        # Trading strategies
+        self.arbitrage_strategy = None
+        self.momentum_strategy = None
+        
+        # Configuration
+        trading_config = config_manager.get_section("trading")
+        self.enable_arbitrage = trading_config.get("enable_arbitrage", True)
+        self.enable_momentum = trading_config.get("enable_momentum", True)
+        self.daily_loss_limit = trading_config.get("daily_loss_limit", 100.0)
+        
+        # State tracking
         self.is_running = False
-        self.daily_profit = 0.0
-        self.total_profit = 0.0
-        self.total_trades = 0
-        self.winning_trades = 0
-        self.last_trade_time = None
-        
-        # Risk management
-        self.daily_loss_limit = config_manager.get_value("trading.daily_loss_limit", 100.0)
-        self.max_position_size = config_manager.get_value("trading.max_position_size", 0.02)
-        
-        # Strategy configuration
-        self.enable_arbitrage = config_manager.get_value("trading.enable_arbitrage", True)
-        self.enable_momentum = config_manager.get_value("trading.enable_momentum", True)
-        
-        # Performance tracking
         self.start_time = None
-        self.last_profit_check = datetime.now()
+        self.cycle_count = 0
+        self.last_arbitrage_scan = None
+        self.last_momentum_scan = None
         
-        # Mock data for demonstration
-        self.mock_symbols = ["BTC/USDT", "ETH/USDT", "ADA/USDT", "SOL/USDT", "DOT/USDT"]
-        self.mock_exchanges = ["binance", "coinbase", "kraken"]
-        
+        # Performance tracking from portfolio manager
+        self.last_performance_report = None
+    
     async def initialize(self):
         """Initialize the trading engine"""
         self.logger.info("🔧 Initializing Trading Engine...")
         
         try:
-            # Initialize exchange connections (mock for now)
-            await self._initialize_exchanges()
+            # Initialize exchange connections
+            await self.exchange_manager.initialize_exchanges()
             
             # Initialize strategies
             await self._initialize_strategies()
@@ -68,31 +73,16 @@ class TradingEngine:
             self.logger.error(f"❌ Trading Engine initialization failed: {e}")
             raise
     
-    async def _initialize_exchanges(self):
-        """Initialize exchange connections"""
-        self.logger.info("🔗 Initializing exchange connections...")
-        
-        # Mock exchange initialization
-        enabled_exchanges = self.config_manager.get_enabled_exchanges()
-        
-        if not enabled_exchanges:
-            self.logger.warning("⚠️ No exchanges enabled - using demo mode")
-            enabled_exchanges = ["demo"]
-        
-        for exchange in enabled_exchanges:
-            self.logger.info(f"✅ Connected to {exchange}")
-            await asyncio.sleep(0.1)  # Simulate connection time
-        
-        self.logger.info(f"🔗 Connected to {len(enabled_exchanges)} exchanges")
-    
     async def _initialize_strategies(self):
         """Initialize trading strategies"""
         self.logger.info("📊 Initializing trading strategies...")
         
         if self.enable_arbitrage:
+            self.arbitrage_strategy = ArbitrageStrategy(self.exchange_manager, self.config_manager)
             self.logger.info("✅ Arbitrage strategy enabled")
         
         if self.enable_momentum:
+            self.momentum_strategy = MomentumStrategy(self.exchange_manager, self.config_manager)
             self.logger.info("✅ Momentum strategy enabled")
         
         if not (self.enable_arbitrage or self.enable_momentum):
@@ -150,191 +140,224 @@ class TradingEngine:
     async def _trading_cycle(self):
         """Execute one trading cycle"""
         try:
-            # Check daily loss limit
-            if abs(self.daily_profit) >= self.daily_loss_limit and self.daily_profit < 0:
-                self.logger.warning("🛑 Daily loss limit reached - stopping trading")
-                await self.notifier.send_risk_alert(
-                    "Daily Loss Limit",
-                    f"Daily loss limit of ${self.daily_loss_limit} reached. Trading stopped."
-                )
-                self.is_running = False
+            self.cycle_count += 1
+            
+            # Check for emergency shutdown
+            if await self.risk_manager.emergency_shutdown_check():
+                await self._emergency_shutdown()
+                return
+            
+            # Check trading limits
+            limits = await self.portfolio_manager.check_trading_limits()
+            if not limits['can_trade']:
+                if self.cycle_count % 120 == 0:  # Log every 10 minutes
+                    self.logger.info(f"🛑 Trading paused: {', '.join(limits['reasons'])}")
                 return
             
             # Execute arbitrage strategy
-            if self.enable_arbitrage:
+            if self.enable_arbitrage and self.arbitrage_strategy:
                 await self._execute_arbitrage_cycle()
             
             # Execute momentum strategy
-            if self.enable_momentum:
+            if self.enable_momentum and self.momentum_strategy:
                 await self._execute_momentum_cycle()
             
-            # Update performance metrics
-            await self._update_performance()
+            # Check existing positions
+            if self.momentum_strategy:
+                position_actions = await self.momentum_strategy.check_positions()
+                for action in position_actions:
+                    await self._execute_trade_action(action, "momentum_position_management")
             
-            # Check for profit milestones
-            await self._check_profit_milestones()
+            # Performance monitoring
+            if self.cycle_count % 720 == 0:  # Every hour (720 * 5 seconds)
+                await self._check_profit_milestones()
+                await self._send_performance_update()
             
         except Exception as e:
-            self.logger.error(f"❌ Trading cycle error: {e}")
+            self.logger.error(f"Error in trading cycle: {e}")
     
     async def _execute_arbitrage_cycle(self):
         """Execute arbitrage trading logic"""
-        # Mock arbitrage opportunity detection
-        if random.random() < 0.3:  # 30% chance of opportunity
-            symbol = random.choice(self.mock_symbols)
-            exchange1 = random.choice(self.mock_exchanges)
-            exchange2 = random.choice(self.mock_exchanges)
+        try:
+            # Rate limit arbitrage scanning (every 30 seconds)
+            now = datetime.now()
+            if self.last_arbitrage_scan and (now - self.last_arbitrage_scan).total_seconds() < 30:
+                return
             
-            if exchange1 != exchange2:
-                # Mock price difference
-                base_price = random.uniform(20000, 60000)  # Mock BTC price range
-                price_diff = random.uniform(0.001, 0.02)  # 0.1% to 2% difference
+            self.last_arbitrage_scan = now
+            
+            # Scan for arbitrage opportunities
+            opportunities = await self.arbitrage_strategy.scan_opportunities()
+            
+            for opportunity in opportunities:
+                # Evaluate risk
+                risk_assessment = await self.risk_manager.evaluate_trade_risk(
+                    {'confidence': 0.9, 'strategy': 'arbitrage'}, 
+                    10000  # Mock account balance
+                )
                 
-                buy_price = base_price
-                sell_price = base_price * (1 + price_diff)
-                
-                # Calculate potential profit
-                amount = 0.001  # Small test amount
-                profit = (sell_price - buy_price) * amount
-                
-                # Check if profitable after fees (mock 0.1% fee each side)
-                fees = (buy_price + sell_price) * amount * 0.001
-                net_profit = profit - fees
-                
-                if net_profit > 0:
-                    await self._execute_arbitrage_trade(symbol, amount, buy_price, sell_price, net_profit, exchange1, exchange2)
-    
-    async def _execute_arbitrage_trade(self, symbol: str, amount: float, buy_price: float, sell_price: float, profit: float, buy_exchange: str, sell_exchange: str):
-        """Execute an arbitrage trade"""
-        self.logger.info(f"💰 Arbitrage opportunity: {symbol}")
-        self.logger.info(f"   Buy on {buy_exchange}: ${buy_price:.2f}")
-        self.logger.info(f"   Sell on {sell_exchange}: ${sell_price:.2f}")
-        self.logger.info(f"   Profit: ${profit:.4f}")
+                if risk_assessment['approved']:
+                    # Execute arbitrage trade
+                    trade_result = await self.arbitrage_strategy.execute_opportunity(opportunity)
+                    if trade_result:
+                        await self._process_trade_result(trade_result)
+                else:
+                    self.logger.warning(f"Arbitrage trade rejected: {', '.join(risk_assessment['warnings'])}")
         
-        # Mock trade execution
-        await asyncio.sleep(0.5)  # Simulate execution time
-        
-        # Update tracking
-        self.total_trades += 1
-        self.daily_profit += profit
-        self.total_profit += profit
-        self.last_trade_time = datetime.now()
-        
-        if profit > 0:
-            self.winning_trades += 1
-        
-        # Log the trade
-        log_trade(symbol, "ARBITRAGE", amount, (buy_price + sell_price) / 2, profit)
-        
-        # Send notification
-        await self.notifier.send_trade_alert(symbol, "ARBITRAGE", amount, (buy_price + sell_price) / 2, profit)
+        except Exception as e:
+            self.logger.error(f"Error in arbitrage cycle: {e}")
     
     async def _execute_momentum_cycle(self):
         """Execute momentum trading logic"""
-        # Mock momentum signal detection
-        if random.random() < 0.2:  # 20% chance of signal
-            symbol = random.choice(self.mock_symbols)
+        try:
+            # Rate limit momentum scanning (every 60 seconds)
+            now = datetime.now()
+            if self.last_momentum_scan and (now - self.last_momentum_scan).total_seconds() < 60:
+                return
             
-            # Mock technical analysis
-            rsi = random.uniform(20, 80)
-            macd_signal = random.choice(["bullish", "bearish"])
+            self.last_momentum_scan = now
             
-            # Determine trade direction
-            if rsi < 30 and macd_signal == "bullish":
-                await self._execute_momentum_trade(symbol, "BUY", rsi, macd_signal)
-            elif rsi > 70 and macd_signal == "bearish":
-                await self._execute_momentum_trade(symbol, "SELL", rsi, macd_signal)
+            # Scan for momentum signals
+            signals = await self.momentum_strategy.scan_signals()
+            
+            for signal in signals:
+                await self._execute_trade_action(signal, "momentum_signal")
+        
+        except Exception as e:
+            self.logger.error(f"Error in momentum cycle: {e}")
     
-    async def _execute_momentum_trade(self, symbol: str, side: str, rsi: float, macd_signal: str):
-        """Execute a momentum trade"""
-        self.logger.info(f"📈 Momentum signal: {symbol} {side}")
-        self.logger.info(f"   RSI: {rsi:.1f}")
-        self.logger.info(f"   MACD: {macd_signal}")
+    async def _execute_trade_action(self, signal: Dict, source: str):
+        """Execute a trade action with risk management"""
+        try:
+            # Evaluate risk
+            risk_assessment = await self.risk_manager.evaluate_trade_risk(signal, 10000)
+            
+            if not risk_assessment['approved']:
+                self.logger.warning(f"Trade rejected ({source}): {', '.join(risk_assessment['warnings'])}")
+                return
+            
+            # Execute the trade
+            trade_result = await self.momentum_strategy.execute_signal(signal)
+            if trade_result:
+                await self._process_trade_result(trade_result)
         
-        # Mock trade execution
-        amount = 0.001
-        price = random.uniform(20000, 60000)
-        profit = random.uniform(-50, 150)  # Mock profit/loss
-        
-        await asyncio.sleep(0.3)  # Simulate execution time
-        
-        # Update tracking
-        self.total_trades += 1
-        self.daily_profit += profit
-        self.total_profit += profit
-        self.last_trade_time = datetime.now()
-        
-        if profit > 0:
-            self.winning_trades += 1
-        
-        # Log the trade
-        log_trade(symbol, side, amount, price, profit)
-        
-        # Send notification
-        await self.notifier.send_trade_alert(symbol, side, amount, price, profit)
+        except Exception as e:
+            self.logger.error(f"Error executing trade action: {e}")
     
-    async def _update_performance(self):
-        """Update and log performance metrics"""
-        # Log performance every 5 minutes
-        if datetime.now() - self.last_profit_check > timedelta(minutes=5):
-            win_rate = (self.winning_trades / max(self.total_trades, 1)) * 100
+    async def _process_trade_result(self, trade_result: Dict):
+        """Process a completed trade result"""
+        try:
+            # Record trade in portfolio
+            await self.portfolio_manager.record_trade(trade_result)
             
-            log_performance(self.daily_profit, self.total_profit, win_rate)
+            # Log the trade
+            log_trade(
+                trade_result.get('symbol', ''),
+                trade_result.get('action', ''),
+                trade_result.get('amount', 0),
+                trade_result.get('price', 0) or trade_result.get('entry_price', 0) or trade_result.get('exit_price', 0),
+                trade_result.get('profit', 0)
+            )
             
-            self.logger.info(f"📊 Performance Update:")
-            self.logger.info(f"   Daily P&L: ${self.daily_profit:.2f}")
-            self.logger.info(f"   Total P&L: ${self.total_profit:.2f}")
-            self.logger.info(f"   Win Rate: {win_rate:.1f}%")
-            self.logger.info(f"   Total Trades: {self.total_trades}")
+            # Send trade notification
+            symbol = trade_result.get('symbol', '')
+            action = trade_result.get('action', '')
+            amount = trade_result.get('amount', 0)
+            price = trade_result.get('price', 0) or trade_result.get('entry_price', 0) or trade_result.get('exit_price', 0)
+            profit = trade_result.get('profit', 0)
             
-            self.last_profit_check = datetime.now()
+            await self.notifier.send_trade_alert(symbol, action, amount, price, profit)
+            
+            # Record losses for risk management
+            if profit < 0:
+                await self.risk_manager.record_loss(abs(profit))
+            
+            self.logger.info(f"✅ Trade processed: {trade_result.get('strategy', 'unknown')} {action} {symbol}")
+            
+        except Exception as e:
+            self.logger.error(f"Error processing trade result: {e}")
     
     async def _check_profit_milestones(self):
         """Check for profit milestones and send notifications"""
-        milestones = [50, 100, 250, 500, 1000, 2500, 5000]
+        try:
+            metrics = await self.portfolio_manager.get_performance_metrics()
+            total_profit = metrics.get('total_profit', 0)
+            daily_profit = metrics.get('daily_profit', 0)
+            
+            milestones = [50, 100, 250, 500, 1000, 2500, 5000]
+            
+            for milestone in milestones:
+                attr_name = f'milestone_{milestone}_reached'
+                if total_profit >= milestone and not hasattr(self, attr_name):
+                    await self.notifier.send_profit_milestone(daily_profit, total_profit)
+                    setattr(self, attr_name, True)
+                    break
         
-        for milestone in milestones:
-            if self.total_profit >= milestone and not hasattr(self, f'milestone_{milestone}_reached'):
-                await self.notifier.send_profit_milestone(self.daily_profit, self.total_profit)
-                setattr(self, f'milestone_{milestone}_reached', True)
-                break
+        except Exception as e:
+            self.logger.error(f"Error checking profit milestones: {e}")
+    
+    async def _send_performance_update(self):
+        """Send periodic performance update"""
+        try:
+            report = await self.portfolio_manager.generate_performance_report()
+            
+            # Send detailed report every 6 hours, summary every hour
+            now = datetime.now()
+            if not self.last_performance_report or (now - self.last_performance_report).total_seconds() >= 21600:  # 6 hours
+                await self.notifier.send_system_alert("performance", report, "info")
+                self.last_performance_report = now
+            else:
+                # Send brief summary
+                metrics = await self.portfolio_manager.get_performance_metrics()
+                summary = f"Hourly Update - Profit: ${metrics['daily_profit']:.2f} | Trades: {metrics['daily_trades']} | Win Rate: {metrics['win_rate']:.1f}%"
+                await self.notifier.send_system_alert("update", summary, "info")
+        
+        except Exception as e:
+            self.logger.error(f"Error sending performance update: {e}")
+    
+    async def _emergency_shutdown(self):
+        """Execute emergency shutdown"""
+        self.logger.critical("🚨 EMERGENCY SHUTDOWN INITIATED")
+        self.is_running = False
+        
+        await self.notifier.send_system_alert(
+            "emergency",
+            "🚨 EMERGENCY SHUTDOWN: Trading has been halted due to risk conditions",
+            "error"
+        )
     
     async def shutdown(self):
         """Gracefully shutdown the trading engine"""
         self.logger.info("🛑 Shutting down Trading Engine...")
         self.is_running = False
         
-        # Send final performance report
-        if self.total_trades > 0:
-            win_rate = (self.winning_trades / self.total_trades) * 100
+        try:
+            # Send final performance report
+            metrics = await self.portfolio_manager.get_performance_metrics()
             
-            final_report = f"""
+            if metrics['total_trades'] > 0:
+                uptime = datetime.now() - self.start_time if self.start_time else timedelta(0)
+                
+                final_report = f"""
 Trading Session Summary:
-• Duration: {datetime.now() - self.start_time if self.start_time else 'N/A'}
-• Total Trades: {self.total_trades}
-• Win Rate: {win_rate:.1f}%
-• Daily P&L: ${self.daily_profit:.2f}
-• Total P&L: ${self.total_profit:.2f}
-            """.strip()
+• Duration: {uptime}
+• Total Trades: {metrics['total_trades']}
+• Win Rate: {metrics['win_rate']:.1f}%
+• Daily P&L: ${metrics['daily_profit']:.2f}
+• Total P&L: ${metrics['total_profit']:.2f}
+• Trades per Hour: {metrics['trades_per_hour']:.1f}
+                """.strip()
+                
+                await self.notifier.send_system_alert(
+                    "shutdown",
+                    final_report,
+                    "info"
+                )
             
-            await self.notifier.send_system_alert(
-                "shutdown",
-                final_report,
-                "info"
-            )
+            # Shutdown exchange connections
+            await self.exchange_manager.shutdown()
+            
+        except Exception as e:
+            self.logger.error(f"Error during shutdown: {e}")
         
         self.logger.info("✅ Trading Engine shutdown complete")
-    
-    def get_status(self) -> Dict:
-        """Get current trading status"""
-        win_rate = (self.winning_trades / max(self.total_trades, 1)) * 100
-        
-        return {
-            "is_running": self.is_running,
-            "daily_profit": self.daily_profit,
-            "total_profit": self.total_profit,
-            "total_trades": self.total_trades,
-            "win_rate": win_rate,
-            "last_trade": self.last_trade_time.isoformat() if self.last_trade_time else None,
-            "uptime": str(datetime.now() - self.start_time) if self.start_time else None
-        }
