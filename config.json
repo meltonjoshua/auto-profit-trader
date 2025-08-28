@@ -1,0 +1,65 @@
+{
+  "trading": {
+    "daily_loss_limit": 100.0,
+    "max_position_size": 0.02,
+    "enable_arbitrage": true,
+    "enable_momentum": true,
+    "target_profit_arbitrage": 0.005,
+    "target_profit_momentum": 0.02
+  },
+  "exchanges": {
+    "binance": {
+      "enabled": false,
+      "api_key": "",
+      "api_secret": "",
+      "testnet": true
+    },
+    "coinbase": {
+      "enabled": false,
+      "api_key": "",
+      "api_secret": "",
+      "sandbox": true
+    },
+    "kraken": {
+      "enabled": false,
+      "api_key": "",
+      "api_secret": "",
+      "testnet": true
+    }
+  },
+  "notifications": {
+    "telegram": {
+      "enabled": false,
+      "bot_token": "",
+      "chat_id": ""
+    },
+    "discord": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "to_email": ""
+    }
+  },
+  "risk_management": {
+    "stop_loss_percentage": 0.02,
+    "take_profit_percentage": 0.05,
+    "max_trades_per_day": 50,
+    "cooldown_after_loss": 300
+  },
+  "technical_analysis": {
+    "rsi_period": 14,
+    "rsi_overbought": 70,
+    "rsi_oversold": 30,
+    "macd_fast": 12,
+    "macd_slow": 26,
+    "macd_signal": 9,
+    "bollinger_period": 20,
+    "bollinger_std": 2
+  }
+}
