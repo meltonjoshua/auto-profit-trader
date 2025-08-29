@@ -1,0 +1,561 @@
+{
+  "errors": [],
+  "generated_at": "2025-08-29T16:59:22Z",
+  "metrics": {
+    "_totals": {
+      "CONFIDENCE.HIGH": 14,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 14,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 3095,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/core/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/core/trading_engine.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 292,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/core/trading_engine_old.py": {
+      "CONFIDENCE.HIGH": 12,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 12,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 274,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/database/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/exchanges/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/exchanges/exchange_manager.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 300,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/notifications/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/notifications/notifier.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 174,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/risk_management/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/risk_management/portfolio_manager.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 456,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/security/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/security/crypto_manager.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 296,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/strategies/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/strategies/trading_strategies.py": {
+      "CONFIDENCE.HIGH": 1,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 1,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 522,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/utils/__init__.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 0,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/utils/config_manager.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 239,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/utils/error_handling.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 278,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/utils/logger.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 46,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "src/utils/validators.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 218,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "204         # Mock arbitrage opportunity detection\n205         if random.random() < 0.3:  # 30% chance of opportunity\n206             symbol = random.choice(self.mock_symbols)\n",
+      "col_offset": 11,
+      "end_col_offset": 26,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 205,
+      "line_range": [
+        205
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "205         if random.random() < 0.3:  # 30% chance of opportunity\n206             symbol = random.choice(self.mock_symbols)\n207             exchange1 = random.choice(self.mock_exchanges)\n",
+      "col_offset": 21,
+      "end_col_offset": 53,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 206,
+      "line_range": [
+        206
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "206             symbol = random.choice(self.mock_symbols)\n207             exchange1 = random.choice(self.mock_exchanges)\n208             exchange2 = random.choice(self.mock_exchanges)\n",
+      "col_offset": 24,
+      "end_col_offset": 58,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 207,
+      "line_range": [
+        207
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "207             exchange1 = random.choice(self.mock_exchanges)\n208             exchange2 = random.choice(self.mock_exchanges)\n209 \n",
+      "col_offset": 24,
+      "end_col_offset": 58,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 208,
+      "line_range": [
+        208
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "211                 # Mock price difference\n212                 base_price = random.uniform(20000, 60000)  # Mock BTC price range\n213                 price_diff = random.uniform(0.001, 0.02)  # 0.1% to 2% difference\n",
+      "col_offset": 29,
+      "end_col_offset": 57,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 212,
+      "line_range": [
+        212
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "212                 base_price = random.uniform(20000, 60000)  # Mock BTC price range\n213                 price_diff = random.uniform(0.001, 0.02)  # 0.1% to 2% difference\n214 \n",
+      "col_offset": 29,
+      "end_col_offset": 56,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 213,
+      "line_range": [
+        213
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "275         # Mock momentum signal detection\n276         if random.random() < 0.2:  # 20% chance of signal\n277             symbol = random.choice(self.mock_symbols)\n",
+      "col_offset": 11,
+      "end_col_offset": 26,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 276,
+      "line_range": [
+        276
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "276         if random.random() < 0.2:  # 20% chance of signal\n277             symbol = random.choice(self.mock_symbols)\n278 \n",
+      "col_offset": 21,
+      "end_col_offset": 53,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 277,
+      "line_range": [
+        277
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "279             # Mock technical analysis\n280             rsi = random.uniform(20, 80)\n281             macd_signal = random.choice([\"bullish\", \"bearish\"])\n",
+      "col_offset": 18,
+      "end_col_offset": 40,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 280,
+      "line_range": [
+        280
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "280             rsi = random.uniform(20, 80)\n281             macd_signal = random.choice([\"bullish\", \"bearish\"])\n282 \n",
+      "col_offset": 26,
+      "end_col_offset": 63,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 281,
+      "line_range": [
+        281
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "298         amount = 0.001\n299         price = random.uniform(20000, 60000)\n300         profit = random.uniform(-50, 150)  # Mock profit/loss\n",
+      "col_offset": 16,
+      "end_col_offset": 44,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 299,
+      "line_range": [
+        299
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "299         price = random.uniform(20000, 60000)\n300         profit = random.uniform(-50, 150)  # Mock profit/loss\n301 \n",
+      "col_offset": 17,
+      "end_col_offset": 41,
+      "filename": "src/core/trading_engine_old.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 300,
+      "line_range": [
+        300
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "139 \n140                 price_variation = random.uniform(-0.02, 0.02)\n141                 current_price = base_price * (1 + price_variation)\n",
+      "col_offset": 34,
+      "end_col_offset": 61,
+      "filename": "src/exchanges/exchange_manager.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 140,
+      "line_range": [
+        140
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "233                     # Add random walk with slight upward bias for momentum\n234                     change = random.uniform(-0.02, 0.025)\n235                     current_price *= 1 + change\n",
+      "col_offset": 29,
+      "end_col_offset": 57,
+      "filename": "src/strategies/trading_strategies.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 234,
+      "line_range": [
+        234
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    }
+  ]
+}
