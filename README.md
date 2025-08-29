@@ -245,6 +245,56 @@ The project includes complete Docker configuration for production deployment:
 - ✅ Automatic dependency handling
 - ✅ Production-ready configuration
 
+### Docker Hub Deployment (Remote Servers)
+
+The auto-profit-trader is also available as a pre-built image on Docker Hub for instant deployment on any server:
+
+#### Docker Hub Image
+```bash
+# Pull the latest image
+docker pull joshm0406/auto-profit-trader:latest
+
+# Or pull a specific version
+docker pull joshm0406/auto-profit-trader:v1.0
+```
+
+#### Quick Remote Deployment
+For rapid deployment on any Docker-enabled server:
+
+**Linux/macOS:**
+```bash
+curl -sSL https://raw.githubusercontent.com/meltonjoshua/auto-profit-trader/main/deploy-remote.sh | bash
+```
+
+**Windows PowerShell:**
+```powershell
+Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/meltonjoshua/auto-profit-trader/main/deploy-remote.ps1").Content
+```
+
+**Manual Deployment:**
+```bash
+# 1. Create directories
+mkdir -p config logs data
+
+# 2. Download production compose file
+curl -o docker-compose.prod.yml https://raw.githubusercontent.com/meltonjoshua/auto-profit-trader/main/docker-compose.prod.yml
+
+# 3. Download sample config
+curl -o config/config.json https://raw.githubusercontent.com/meltonjoshua/auto-profit-trader/main/config.json
+
+# 4. Configure your API keys in config/config.json
+
+# 5. Deploy
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### Docker Hub Benefits:
+- 🚀 **Instant Deployment**: No build time required
+- 📦 **Pre-optimized**: Already compiled and tested
+- 🔄 **Consistent**: Same image across all environments
+- ⚡ **Fast**: No compilation, just download and run
+- 🌐 **Global**: Available worldwide from Docker Hub CDN
+
 ## �🔧 Advanced Configuration
 
 ### Production Trading Settings

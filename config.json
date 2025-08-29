@@ -1,7 +1,7 @@
 {
   "trading": {
     "daily_loss_limit": 100.0,
-    "max_position_size": 0.02,
+    "max_position_size": 0.05,
     "enable_arbitrage": true,
     "enable_momentum": true,
     "target_profit_arbitrage": 0.005,
@@ -18,7 +18,7 @@
       "enabled": false,
       "api_key": "",
       "api_secret": "",
-      "sandbox": true
+      "testnet": true
     },
     "kraken": {
       "enabled": false,
@@ -29,13 +29,13 @@
   },
   "notifications": {
     "telegram": {
-      "enabled": false,
-      "bot_token": "",
-      "chat_id": ""
+      "enabled": true,
+      "bot_token": "434",
+      "chat_id": "434"
     },
     "discord": {
-      "enabled": false,
-      "webhook_url": ""
+      "enabled": true,
+      "webhook_url": "n"
     },
     "email": {
       "enabled": false,

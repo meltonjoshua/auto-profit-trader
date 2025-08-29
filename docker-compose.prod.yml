@@ -1,6 +1,6 @@
 services:
   auto-profit-trader:
-    build: .
+    image: joshm0406/auto-profit-trader:latest
     container_name: auto-profit-trader
     restart: unless-stopped
     environment:
