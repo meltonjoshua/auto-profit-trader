@@ -18,7 +18,7 @@ class TestInputValidator:
             "trader123@crypto-exchange.io",
             "support+trading@platform.org",
         ]
-        
+
         for email in valid_emails:
             assert InputValidator.validate_email(email), f"Failed for {email}"
 
@@ -34,7 +34,7 @@ class TestInputValidator:
             None,
             123,
         ]
-        
+
         for email in invalid_emails:
             assert not InputValidator.validate_email(email), f"Should fail for {email}"
 
@@ -45,7 +45,7 @@ class TestInputValidator:
             "very_long_api_key_1234567890abcdef",  # Long key
             "API-KEY-WITH-DASHES-123",
         ]
-        
+
         for key in valid_keys:
             assert InputValidator.validate_api_key(key), f"Failed for {key}"
 
@@ -58,7 +58,7 @@ class TestInputValidator:
             None,
             123,
         ]
-        
+
         for key in invalid_keys:
             assert not InputValidator.validate_api_key(key), f"Should fail for {key}"
 
@@ -71,7 +71,7 @@ class TestInputValidator:
             1000000,
             "123.45",  # String numbers should work
         ]
-        
+
         for amount in valid_amounts:
             assert InputValidator.validate_amount(amount), f"Failed for {amount}"
 
@@ -84,9 +84,11 @@ class TestInputValidator:
             None,
             [],
         ]
-        
+
         for amount in invalid_amounts:
-            assert not InputValidator.validate_amount(amount), f"Should fail for {amount}"
+            assert not InputValidator.validate_amount(
+                amount
+            ), f"Should fail for {amount}"
 
     def test_validate_percentage_valid_percentages(self):
         """Test validation of valid percentages"""
@@ -97,7 +99,7 @@ class TestInputValidator:
             100,
             "75.5",  # String numbers should work
         ]
-        
+
         for pct in valid_percentages:
             assert InputValidator.validate_percentage(pct), f"Failed for {pct}"
 
@@ -110,7 +112,7 @@ class TestInputValidator:
             "invalid",
             None,
         ]
-        
+
         for pct in invalid_percentages:
             assert not InputValidator.validate_percentage(pct), f"Should fail for {pct}"
 
@@ -125,7 +127,7 @@ class TestInputValidator:
             "btc/usdt",  # Lowercase should be valid
             "eth/btc",
         ]
-        
+
         for symbol in valid_symbols:
             assert InputValidator.validate_trading_pair(symbol), f"Failed for {symbol}"
 
@@ -141,9 +143,11 @@ class TestInputValidator:
             None,
             123,
         ]
-        
+
         for symbol in invalid_symbols:
-            assert not InputValidator.validate_trading_pair(symbol), f"Should fail for {symbol}"
+            assert not InputValidator.validate_trading_pair(
+                symbol
+            ), f"Should fail for {symbol}"
 
     def test_sanitize_string_normal_input(self):
         """Test string sanitization with normal input"""
@@ -167,7 +171,7 @@ class TestInputValidator:
         """Test string sanitization with non-string input"""
         result = InputValidator.sanitize_string(123)
         assert result == ""
-        
+
         result = InputValidator.sanitize_string(None)
         assert result == ""
 
@@ -179,7 +183,7 @@ class TestInputValidator:
             "enable_arbitrage": True,
         }
         required_fields = ["daily_loss_limit", "max_position_size"]
-        
+
         errors = InputValidator.validate_config_section(config, required_fields)
         assert errors == []
 
@@ -189,7 +193,7 @@ class TestInputValidator:
             "daily_loss_limit": 100.0,
         }
         required_fields = ["daily_loss_limit", "max_position_size"]
-        
+
         errors = InputValidator.validate_config_section(config, required_fields)
         assert "Missing required field: max_position_size" in errors
 
@@ -200,7 +204,7 @@ class TestInputValidator:
             "max_position_size": None,
         }
         required_fields = ["daily_loss_limit", "max_position_size"]
-        
+
         errors = InputValidator.validate_config_section(config, required_fields)
         assert len(errors) == 2
         assert any("cannot be empty" in error for error in errors)
@@ -212,7 +216,7 @@ class TestInputValidator:
             "api_key": "",
             "api_secret": "",
         }
-        
+
         errors = InputValidator.validate_exchange_config(config)
         assert errors == []
 
@@ -223,7 +227,7 @@ class TestInputValidator:
             "api_key": "valid_api_key_123456",
             "api_secret": "valid_api_secret_789012",
         }
-        
+
         errors = InputValidator.validate_exchange_config(config)
         assert errors == []
 
@@ -234,7 +238,7 @@ class TestInputValidator:
             "api_key": "short",  # Too short
             "api_secret": "",  # Empty
         }
-        
+
         errors = InputValidator.validate_exchange_config(config)
         assert len(errors) == 2
         assert any("Invalid API key" in error for error in errors)
@@ -247,7 +251,7 @@ class TestInputValidator:
             "take_profit_percentage": 0.05,
             "max_trades_per_day": 50,
         }
-        
+
         errors = InputValidator.validate_risk_config(config)
         assert errors == []
 
@@ -258,7 +262,7 @@ class TestInputValidator:
             "take_profit_percentage": 0,  # Too small
             "max_trades_per_day": 2000,  # Too large
         }
-        
+
         errors = InputValidator.validate_risk_config(config)
         assert len(errors) == 3
 
@@ -271,7 +275,7 @@ class TestInputValidator:
             "price": 45000.0,
             "confidence": 0.8,
         }
-        
+
         errors = InputValidator.validate_trade_signal(signal)
         assert errors == []
 
@@ -281,7 +285,7 @@ class TestInputValidator:
             "action": "BUY",
             # Missing symbol and amount
         }
-        
+
         errors = InputValidator.validate_trade_signal(signal)
         assert len(errors) >= 2
         assert any("Missing required field: symbol" in error for error in errors)
@@ -296,6 +300,6 @@ class TestInputValidator:
             "price": 0,  # Too small
             "confidence": 1.5,  # Too large
         }
-        
+
         errors = InputValidator.validate_trade_signal(signal)
         assert len(errors) >= 5
