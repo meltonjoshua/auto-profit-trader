@@ -12,6 +12,7 @@ import numpy as np
 
 try:
     import talib
+
     TALIB_AVAILABLE = True
 except ImportError:
     TALIB_AVAILABLE = False
