@@ -23,6 +23,8 @@ class TestSecurityManager:
 
     def test_init_creates_encryption_key(self):
         """Test that SecurityManager creates encryption key on initialization"""
+        import platform
+        
         with tempfile.TemporaryDirectory() as temp_dir:
             key_file = Path(temp_dir) / "test_key"
             creds_file = Path(temp_dir) / "test_creds.json"
@@ -30,7 +32,14 @@ class TestSecurityManager:
             security_manager = SecurityManager(key_file, creds_file)
 
             assert key_file.exists()
-            assert oct(key_file.stat().st_mode)[-3:] == "600"
+            
+            # On Windows, file permissions work differently
+            if platform.system() == "Windows":
+                # On Windows, just check that the file exists and is readable
+                assert key_file.is_file()
+            else:
+                # On Unix systems, check for exact permissions
+                assert oct(key_file.stat().st_mode)[-3:] == "600"
 
     def test_encrypt_decrypt_credentials_roundtrip(self):
         """Test encrypting and decrypting credentials"""

@@ -46,6 +46,8 @@ class SecurityManager:
         Raises:
             SecurityError: If key creation fails
         """
+        import platform
+        
         try:
             if not self.key_file.exists():
                 key = Fernet.generate_key()
@@ -57,17 +59,29 @@ class SecurityManager:
                     f.write(key)
 
                 # Set restrictive permissions (owner read/write only)
-                self.key_file.chmod(0o600)
+                try:
+                    self.key_file.chmod(0o600)
+                except (OSError, NotImplementedError):
+                    # On Windows, chmod might not work as expected
+                    if platform.system() == "Windows":
+                        logger.info("Windows detected - file permissions handled by OS")
+                    else:
+                        logger.warning("Could not set file permissions")
+                        
                 logger.info("Generated new encryption key")
             else:
-                # Verify key file has secure permissions
-                current_permissions = oct(self.key_file.stat().st_mode)[-3:]
-                if current_permissions != "600":
-                    logger.warning(
-                        "Encryption key file has insecure permissions: %s",
-                        current_permissions,
-                    )
-                    self.key_file.chmod(0o600)
+                # Verify key file has secure permissions (skip on Windows)
+                if platform.system() != "Windows":
+                    current_permissions = oct(self.key_file.stat().st_mode)[-3:]
+                    if current_permissions != "600":
+                        logger.warning(
+                            "Encryption key file has insecure permissions: %s",
+                            current_permissions,
+                        )
+                        try:
+                            self.key_file.chmod(0o600)
+                        except (OSError, NotImplementedError):
+                            logger.warning("Could not fix file permissions")
 
         except Exception as e:
             logger.error("Failed to ensure encryption key: %s", e)
@@ -136,8 +150,16 @@ class SecurityManager:
             with open(self.credentials_file, "w", encoding="utf-8") as f:
                 json.dump(all_credentials, f, indent=2)
 
-            # Set secure permissions
-            self.credentials_file.chmod(0o600)
+            # Set secure permissions (handle Windows compatibility)
+            try:
+                self.credentials_file.chmod(0o600)
+            except (OSError, NotImplementedError):
+                import platform
+                if platform.system() == "Windows":
+                    logger.debug("Windows detected - file permissions handled by OS")
+                else:
+                    logger.warning("Could not set secure permissions on credentials file")
+                    
             logger.info("Encrypted and stored credentials for %s", exchange)
             return True
 
