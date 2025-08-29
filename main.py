@@ -10,14 +10,15 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
 
 from core.trading_engine import TradingEngine
-from utils.logger import setup_logger, log_trade, log_performance
-from utils.config_manager import ConfigManager
 from notifications.notifier import Notifier
+from utils.config_manager import ConfigManager
+from utils.logger import setup_logger, log_performance, log_trade
 
 # ASCII Art Banner
 BANNER = r"""
@@ -67,102 +68,132 @@ BANNER = r"""
 """
 
 class AutoProfitTrader:
-    def __init__(self):
+    """Main auto profit trader class that orchestrates the entire trading system"""
+
+    def __init__(self) -> None:
+        """Initialize the Auto Profit Trader"""
         self.logger = setup_logger("main")
         self.config_manager = ConfigManager()
         self.notifier = Notifier(self.config_manager)
-        self.trading_engine = None
+        self.trading_engine: Optional[TradingEngine] = None
         self.running = False
+
+    async def startup(self) -> None:
+        """
+        Initialize the trading system
         
-    async def startup(self):
-        """Initialize the trading system"""
+        Raises:
+            Exception: If startup fails
+        """
         print(BANNER)
         self.logger.info("🚀 Auto Profit Trader Starting Up...")
-        
+
         try:
-            # Load configuration
+            # Load and validate configuration
             config = self.config_manager.get_config()
-            self.logger.info("✅ Configuration loaded successfully")
+            if not config:
+                raise ValueError("Configuration is empty or invalid")
             
+            self.logger.info("✅ Configuration loaded successfully")
+
             # Initialize trading engine
             self.trading_engine = TradingEngine(self.config_manager, self.notifier)
             await self.trading_engine.initialize()
             self.logger.info("✅ Trading engine initialized")
-            
+
             # Send startup notification
             await self.notifier.send_notification(
                 "🚀 Auto Profit Trader Started!",
-                "Your automated trading bot is now active and scanning for profitable opportunities."
+                "Your automated trading bot is now active and scanning for profitable opportunities.",
             )
-            
+
             self.running = True
             self.logger.info("💰 System ready - Starting to make money!")
-            
+
         except Exception as e:
-            self.logger.error(f"❌ Startup failed: {e}")
+            self.logger.error("❌ Startup failed: %s", e)
             await self.notifier.send_notification(
-                "❌ Startup Failed",
-                f"Auto Profit Trader failed to start: {e}"
+                "❌ Startup Failed", f"Auto Profit Trader failed to start: {e}"
             )
             raise
     
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """Gracefully shutdown the trading system"""
         self.logger.info("🛑 Shutting down Auto Profit Trader...")
         self.running = False
-        
+
         if self.trading_engine:
-            await self.trading_engine.shutdown()
-            
-        await self.notifier.send_notification(
-            "🛑 Auto Profit Trader Stopped",
-            "Trading bot has been safely shut down. All positions closed."
-        )
-        
-        self.logger.info("✅ Shutdown complete")
-    
-    async def run(self):
-        """Main trading loop"""
-        await self.startup()
-        
+            try:
+                await self.trading_engine.shutdown()
+            except Exception as e:
+                self.logger.error("Error during trading engine shutdown: %s", e)
+
         try:
+            await self.notifier.send_notification(
+                "🛑 Auto Profit Trader Stopped",
+                "Trading bot has been safely shut down. All positions closed.",
+            )
+        except Exception as e:
+            self.logger.error("Error sending shutdown notification: %s", e)
+
+        self.logger.info("✅ Shutdown complete")
+
+    async def run(self) -> None:
+        """Main trading loop"""
+        try:
+            await self.startup()
+
             # Start the trading engine
-            await self.trading_engine.start_trading()
-            
+            if self.trading_engine:
+                await self.trading_engine.start_trading()
+            else:
+                raise RuntimeError("Trading engine not initialized")
+
         except KeyboardInterrupt:
             self.logger.info("🛑 Received shutdown signal")
         except Exception as e:
-            self.logger.error(f"❌ Trading error: {e}")
-            await self.notifier.send_notification(
-                "❌ Trading Error",
-                f"Auto Profit Trader encountered an error: {e}"
-            )
+            self.logger.error("❌ Trading error: %s", e)
+            try:
+                await self.notifier.send_notification(
+                    "❌ Trading Error",
+                    f"Auto Profit Trader encountered an error: {e}",
+                )
+            except Exception as notify_error:
+                self.logger.error("Failed to send error notification: %s", notify_error)
         finally:
             await self.shutdown()
 
-def signal_handler(signum, frame):
-    """Handle shutdown signals""" 
+def signal_handler(signum: int, frame) -> None:
+    """
+    Handle shutdown signals
+    
+    Args:
+        signum: Signal number
+        frame: Current stack frame
+    """
     print("\n🛑 Received shutdown signal. Stopping trading...")
     sys.exit(0)
 
-def main():
+
+async def main() -> None:
     """Main entry point"""
-    # Set up signal handlers
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    
     # Create and run the trader
     trader = AutoProfitTrader()
-    
+
     try:
-        asyncio.run(trader.run())
+        await trader.run()
     except KeyboardInterrupt:
         print("\n🛑 Shutting down gracefully...")
     except Exception as e:
         print(f"❌ Fatal error: {e}")
         sys.exit(1)
 
+
 if __name__ == "__main__":
+    # Set up signal handlers
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
