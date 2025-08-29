@@ -8,7 +8,7 @@ import sys
 import traceback
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Type, Union
+from typing import Any, Callable, Dict, Optional, Type
 
 
 class ErrorSeverity(Enum):

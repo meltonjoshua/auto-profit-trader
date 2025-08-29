@@ -7,6 +7,7 @@ import pytest
 from utils.validators import InputValidator, ValidationError
 
 
+@pytest.mark.unit
 class TestInputValidator:
     """Test cases for InputValidator class"""
 

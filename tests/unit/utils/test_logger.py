@@ -12,6 +12,7 @@ import pytest
 from utils.logger import log_performance, log_trade, setup_logger
 
 
+@pytest.mark.unit
 class TestLogger:
     """Test cases for logger utilities"""
 

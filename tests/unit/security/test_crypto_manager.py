@@ -18,6 +18,7 @@ from security.crypto_manager import (
 )
 
 
+@pytest.mark.unit
 class TestSecurityManager:
     """Test cases for SecurityManager class"""
 

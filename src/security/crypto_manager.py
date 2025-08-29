@@ -3,13 +3,12 @@ Security utilities for Auto Profit Trader
 Handles API key encryption and secure credential management
 """
 
-import base64
 import json
 import logging
 import os
 import secrets
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from cryptography.fernet import Fernet, InvalidToken
 

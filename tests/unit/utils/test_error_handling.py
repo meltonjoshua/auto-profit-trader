@@ -23,6 +23,7 @@ from utils.error_handling import (
 )
 
 
+@pytest.mark.unit
 class TestTradingError:
     """Test cases for TradingError and subclasses"""
 
@@ -60,6 +61,7 @@ class TestTradingError:
         assert isinstance(config_error, TradingError)
 
 
+@pytest.mark.unit
 class TestErrorHandler:
     """Test cases for ErrorHandler class"""
 
@@ -131,6 +133,7 @@ class TestErrorHandler:
         assert "ValueError" in summary["error_counts"]
 
 
+@pytest.mark.unit
 class TestErrorHandlingDecorator:
     """Test cases for error handling decorator"""
 
@@ -177,6 +180,7 @@ class TestErrorHandlingDecorator:
         test_function("value", kwarg1="keyword")
 
 
+@pytest.mark.unit
 class TestRetryDecorator:
     """Test cases for retry decorator"""
 
@@ -242,6 +246,7 @@ class TestRetryDecorator:
         assert len(call_times) == 3
 
 
+@pytest.mark.unit
 class TestPerformanceMonitor:
     """Test cases for PerformanceMonitor class"""
 
@@ -303,6 +308,7 @@ class TestPerformanceMonitor:
             mock_log.assert_called_once()
 
 
+@pytest.mark.unit
 class TestPerformanceMonitorDecorator:
     """Test cases for performance monitoring decorator"""
 

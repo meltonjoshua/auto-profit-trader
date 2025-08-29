@@ -12,6 +12,7 @@ import pytest
 from utils.config_manager import ConfigManager
 
 
+@pytest.mark.unit
 class TestConfigManager:
     """Test cases for ConfigManager class"""
 

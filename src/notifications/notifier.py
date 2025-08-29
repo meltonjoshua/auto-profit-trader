@@ -8,7 +8,6 @@ import smtplib
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Optional
 
 import aiohttp
 
@@ -140,16 +139,19 @@ class Notifier:
             msg["Subject"] = f"Auto Profit Trader: {title}"
 
             # Add HTML formatting
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             html_message = f"""
             <html>
                 <body>
                     <h2 style="color: #2c3e50;">{title}</h2>
-                    <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #3498db;">
-                        <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">{message}</pre>
+                    <div style="background-color: #f8f9fa; padding: 15px; 
+                                border-left: 4px solid #3498db;">
+                        <pre style="white-space: pre-wrap; 
+                                    font-family: Arial, sans-serif;">{message}</pre>
                     </div>
                     <hr>
                     <p style="color: #7f8c8d; font-size: 12px;">
-                        Sent by Auto Profit Trader at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                        Sent by Auto Profit Trader at {timestamp}
                     </p>
                 </body>
             </html>

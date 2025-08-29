@@ -73,6 +73,7 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+bandit-*-report.json
 
 # Exchange-specific
 binance_cache/

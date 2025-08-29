@@ -3,11 +3,9 @@ Exchange Manager for Auto Profit Trader
 Manages connections to multiple cryptocurrency exchanges using CCXT
 """
 
-import asyncio
-import logging
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import ccxt.async_support as ccxt
 
@@ -82,9 +80,8 @@ class ExchangeManager:
         balance = await exchange.fetch_balance()
 
         self.exchanges[exchange_name] = exchange
-        self.logger.info(
-            f"Connected to {exchange_name} - Balance: ${balance.get('USDT', {}).get('total', 0):.2f}"
-        )
+        usdt_balance = balance.get("USDT", {}).get("total", 0)
+        self.logger.info(f"Connected to {exchange_name} - Balance: ${usdt_balance:.2f}")
 
     async def _initialize_paper_trading(self):
         """Initialize paper trading mode for testing"""

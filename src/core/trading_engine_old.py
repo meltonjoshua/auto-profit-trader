@@ -5,16 +5,9 @@ Orchestrates all trading strategies and components
 
 import asyncio
 import random
-import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict
 
-from ..exchanges.exchange_manager import ExchangeManager
-from ..risk_management.portfolio_manager import PortfolioManager, RiskManager
-from ..security.crypto_manager import SecurityManager
-from ..strategies.trading_strategies import ArbitrageStrategy, MomentumStrategy
-
-# Import our components
 from ..utils.logger import log_performance, log_trade, setup_logger
 
 
@@ -324,7 +317,7 @@ class TradingEngine:
 
             log_performance(self.daily_profit, self.total_profit, win_rate)
 
-            self.logger.info(f"📊 Performance Update:")
+            self.logger.info("📊 Performance Update:")
             self.logger.info(f"   Daily P&L: ${self.daily_profit:.2f}")
             self.logger.info(f"   Total P&L: ${self.total_profit:.2f}")
             self.logger.info(f"   Win Rate: {win_rate:.1f}%")

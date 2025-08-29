@@ -4,9 +4,8 @@ Orchestrates all trading strategies and components
 """
 
 import asyncio
-import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict
 
 from exchanges.exchange_manager import ExchangeManager
 from risk_management.portfolio_manager import PortfolioManager, RiskManager
@@ -14,7 +13,7 @@ from security.crypto_manager import SecurityManager
 from strategies.trading_strategies import ArbitrageStrategy, MomentumStrategy
 
 # Import our components
-from utils.logger import log_performance, log_trade, setup_logger
+from utils.logger import log_trade, setup_logger
 
 
 class TradingEngine:
@@ -117,9 +116,8 @@ class TradingEngine:
         ta_config = self.config_manager.get_section("technical_analysis")
 
         self.logger.info(f"📊 RSI period: {ta_config.get('rsi_period', 14)}")
-        self.logger.info(
-            f"📈 MACD config: {ta_config.get('macd_fast', 12)}/{ta_config.get('macd_slow', 26)}/{ta_config.get('macd_signal', 9)}"
-        )
+        macd_config = f"{ta_config.get('macd_fast', 12)}/{ta_config.get('macd_slow', 26)}/{ta_config.get('macd_signal', 9)}"
+        self.logger.info(f"📈 MACD config: {macd_config}")
         self.logger.info(
             f"📊 Bollinger Bands: {ta_config.get('bollinger_period', 20)} period"
         )
@@ -224,9 +222,8 @@ class TradingEngine:
                     if trade_result:
                         await self._process_trade_result(trade_result)
                 else:
-                    self.logger.warning(
-                        f"Arbitrage trade rejected: {', '.join(risk_assessment['warnings'])}"
-                    )
+                    warnings_msg = ", ".join(risk_assessment["warnings"])
+                    self.logger.warning(f"Arbitrage trade rejected: {warnings_msg}")
 
         except Exception as e:
             self.logger.error(f"Error in arbitrage cycle: {e}")
@@ -260,9 +257,8 @@ class TradingEngine:
             risk_assessment = await self.risk_manager.evaluate_trade_risk(signal, 10000)
 
             if not risk_assessment["approved"]:
-                self.logger.warning(
-                    f"Trade rejected ({source}): {', '.join(risk_assessment['warnings'])}"
-                )
+                warnings_msg = ", ".join(risk_assessment["warnings"])
+                self.logger.warning(f"Trade rejected ({source}): {warnings_msg}")
                 return
 
             # Execute the trade
@@ -307,9 +303,10 @@ class TradingEngine:
             if profit < 0:
                 await self.risk_manager.record_loss(abs(profit))
 
-            self.logger.info(
-                f"✅ Trade processed: {trade_result.get('strategy', 'unknown')} {action} {symbol}"
-            )
+            action = trade_result.get("action", "UNKNOWN")
+            symbol = trade_result.get("symbol", "N/A")
+            strategy = trade_result.get("strategy", "unknown")
+            self.logger.info(f"✅ Trade processed: {strategy} {action} {symbol}")
 
         except Exception as e:
             self.logger.error(f"Error processing trade result: {e}")
@@ -351,7 +348,13 @@ class TradingEngine:
             else:
                 # Send brief summary
                 metrics = await self.portfolio_manager.get_performance_metrics()
-                summary = f"Hourly Update - Profit: ${metrics['daily_profit']:.2f} | Trades: {metrics['daily_trades']} | Win Rate: {metrics['win_rate']:.1f}%"
+                daily_profit = metrics["daily_profit"]
+                daily_trades = metrics["daily_trades"]
+                win_rate = metrics["win_rate"]
+                summary = (
+                    f"Hourly Update - Profit: ${daily_profit:.2f} | "
+                    f"Trades: {daily_trades} | Win Rate: {win_rate:.1f}%"
+                )
                 await self.notifier.send_system_alert("update", summary, "info")
 
         except Exception as e:

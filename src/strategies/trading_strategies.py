@@ -4,9 +4,8 @@ Implements arbitrage and momentum trading strategies
 """
 
 import asyncio
-import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import numpy as np
 
