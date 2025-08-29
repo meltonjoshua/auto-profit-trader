@@ -1,0 +1,70 @@
+# Docker related files
+.dockerignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs (will be mounted as volumes)
+logs/
+*.log
+
+# Database files (will be mounted as volumes)
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files with secrets
+config.json
+.env
+*.key
+*.pem
+
+# Development files
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+
+# Documentation build
+docs/_build/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Reports
+*-report.json
+coverage.xml
+
+# Data files
+data/
+portfolio.db
+performance.json

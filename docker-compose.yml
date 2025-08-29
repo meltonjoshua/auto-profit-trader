@@ -1,0 +1,42 @@
+services:
+  auto-profit-trader:
+    build: .
+    container_name: auto-profit-trader
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Persist configuration, logs, and data
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - trader-data:/app/portfolio.db
+    networks:
+      - trader-network
+    ports:
+      # Optional: expose port for future web interface
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    # Resource limits for safety
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+volumes:
+  trader-data:
+    driver: local
+
+networks:
+  trader-network:
+    driver: bridge

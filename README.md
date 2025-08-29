@@ -1,4 +1,4 @@
-# Auto Profit Trader 🚀
+how t# Auto Profit Trader 🚀
 
 **Enterprise-Grade Autonomous Cryptocurrency Trading Bot**
 
@@ -106,14 +106,15 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed development guidelines.
 
 ## 🚀 Quick Start (Production)
 
-### 1. Installation
+### Option 1: Docker Deployment (Recommended)
+
+#### 1. Installation
 ```bash
 git clone https://github.com/meltonjoshua/auto-profit-trader.git
 cd auto-profit-trader
-pip install -r requirements.txt
 ```
 
-### 2. Production Setup
+#### 2. Production Setup
 ```bash
 python production_setup.py
 ```
@@ -123,12 +124,53 @@ This wizard will configure:
 - Notification channels
 - Strategy settings
 
-### 3. Start Autonomous Trading
+#### 3. Deploy with Docker
+```bash
+# Build and start the container
+./docker-deploy.sh deploy
+
+# Monitor logs
+./docker-deploy.sh logs
+
+# Check status
+./docker-deploy.sh status
+```
+
+#### 4. Container Management
+```bash
+# Stop the bot
+./docker-deploy.sh stop
+
+# Restart the bot
+./docker-deploy.sh restart
+
+# Update and restart
+./docker-deploy.sh update
+
+# Enter container shell
+./docker-deploy.sh shell
+```
+
+### Option 2: Direct Installation
+
+#### 1. Installation
+```bash
+git clone https://github.com/meltonjoshua/auto-profit-trader.git
+cd auto-profit-trader
+pip install -r requirements.txt
+```
+
+#### 2. Production Setup
+```bash
+python production_setup.py
+```
+
+#### 3. Start Autonomous Trading
 ```bash
 python trader_daemon.py
 ```
 
-The bot will now:
+### ✅ Either way, the bot will now:
 - ✅ Run 24/7 without intervention
 - ✅ Automatically restart on errors
 - ✅ Send notifications on trades and milestones
@@ -160,7 +202,50 @@ The bot will now:
 - **Stop Loss**: 2% per trade
 - **Emergency Shutdown**: Triggered on excessive losses
 
-## 🔧 Advanced Configuration
+## � Docker Deployment
+
+### Quick Docker Setup
+
+The project includes complete Docker configuration for production deployment:
+
+#### Files Created:
+- `Dockerfile` - Container configuration
+- `docker-compose.yml` - Service orchestration
+- `docker-deploy.sh` - Deployment automation script
+- `.dockerignore` - Optimized build context
+
+#### Deployment Commands:
+```bash
+# Full deployment (build + start)
+./docker-deploy.sh deploy
+
+# Individual commands
+./docker-deploy.sh build      # Build image
+./docker-deploy.sh start      # Start container
+./docker-deploy.sh stop       # Stop container
+./docker-deploy.sh restart    # Restart container
+./docker-deploy.sh logs       # View logs
+./docker-deploy.sh status     # Check status
+./docker-deploy.sh shell      # Enter container
+./docker-deploy.sh update     # Update and restart
+```
+
+#### Docker Features:
+- **Auto-restart**: Container restarts automatically on failure
+- **Volume Persistence**: Logs, data, and config persist across restarts
+- **Resource Limits**: CPU and memory limits for safety
+- **Health Checks**: Built-in container health monitoring
+- **Security**: Non-root user execution
+- **Optimized**: Multi-stage build for smaller image size
+
+#### Container Benefits:
+- ✅ Isolated environment
+- ✅ Consistent deployment
+- ✅ Easy scaling and management
+- ✅ Automatic dependency handling
+- ✅ Production-ready configuration
+
+## �🔧 Advanced Configuration
 
 ### Production Trading Settings
 ```json
