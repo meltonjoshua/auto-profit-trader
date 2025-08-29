@@ -9,7 +9,7 @@ import logging
 import os
 import secrets
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from cryptography.fernet import Fernet, InvalidToken
 
@@ -257,7 +257,7 @@ class SecurityManager:
             del overwrite
         del sensitive_data
 
-    def list_stored_exchanges(self) -> list[str]:
+    def list_stored_exchanges(self) -> List[str]:
         """
         Get list of exchanges with stored credentials
 
@@ -314,7 +314,7 @@ class EnvironmentValidator:
     """Validates environment security"""
 
     @staticmethod
-    def check_environment_security() -> list[str]:
+    def check_environment_security() -> List[str]:
         """
         Check for common security issues
 
