@@ -10,8 +10,13 @@ import sys
 import os
 import time
 import subprocess
+import warnings
 from datetime import datetime
 from pathlib import Path
+
+# Suppress protobuf warnings before any imports that might trigger them
+warnings.filterwarnings("ignore", category=UserWarning, module="google.protobuf.runtime_version")
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))

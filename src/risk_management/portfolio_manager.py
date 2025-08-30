@@ -300,7 +300,7 @@ class PortfolioManager:
 
         return limits
 
-    async def get_trade_history(self, days: int = 7) -> List[Dict]:
+    async def get_trade_history(self, days: int = 7, limit: int = None) -> List[Dict]:
         """Get recent trade history"""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -308,14 +308,16 @@ class PortfolioManager:
 
             start_date = (datetime.now() - timedelta(days=days)).isoformat()
 
-            cursor.execute(
-                """
+            query = """
                 SELECT * FROM trades 
                 WHERE timestamp >= ? 
                 ORDER BY timestamp DESC
-            """,
-                (start_date,),
-            )
+            """
+            
+            if limit:
+                query += f" LIMIT {limit}"
+
+            cursor.execute(query, (start_date,))
 
             trades = []
             for row in cursor.fetchall():

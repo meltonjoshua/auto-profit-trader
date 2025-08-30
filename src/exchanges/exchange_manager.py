@@ -90,7 +90,21 @@ class ExchangeManager:
         """Initialize paper trading mode for testing"""
         self.logger.info("📄 Initializing paper trading mode...")
 
-        # Create a mock exchange for paper trading
+        # Check if demo mode is requested
+        demo_mode = self.config_manager.get_section("trading").get("demo_mode", False)
+        
+        if demo_mode:
+            # Use realistic demo Kraken
+            try:
+                from demo.demo_kraken import DemoKrakenExchange
+                demo_exchange = DemoKrakenExchange()
+                self.exchanges["demo_kraken"] = demo_exchange
+                self.logger.info("🇬🇧 Demo Kraken mode initialized with realistic UK trading")
+                return
+            except ImportError:
+                self.logger.warning("Demo mode not available, falling back to basic paper trading")
+
+        # Create a mock exchange for basic paper trading
         paper_exchange = type(
             "PaperExchange",
             (),
@@ -102,6 +116,24 @@ class ExchangeManager:
                     "createOrder": True,
                 },
                 "markets": {
+                    "BTC/GBP": {
+                        "id": "BTCGBP",
+                        "symbol": "BTC/GBP",
+                        "base": "BTC",
+                        "quote": "GBP",
+                    },
+                    "ETH/GBP": {
+                        "id": "ETHGBP",
+                        "symbol": "ETH/GBP",
+                        "base": "ETH",
+                        "quote": "GBP",
+                    },
+                    "ADA/GBP": {
+                        "id": "ADAGBP",
+                        "symbol": "ADA/GBP",
+                        "base": "ADA",
+                        "quote": "GBP",
+                    },
                     "BTC/USDT": {
                         "id": "BTCUSDT",
                         "symbol": "BTC/USDT",
@@ -121,7 +153,10 @@ class ExchangeManager:
                         "quote": "USDT",
                     },
                 },
-                "paper_balance": {"USDT": 10000.0, "BTC": 0.0, "ETH": 0.0, "ADA": 0.0},
+                "paper_balance": {
+                    "GBP": 5000.0, "USDT": 5000.0, 
+                    "BTC": 0.0, "ETH": 0.0, "ADA": 0.0
+                },
             },
         )()
 
@@ -131,8 +166,13 @@ class ExchangeManager:
         """Get current ticker data for a symbol"""
         try:
             if exchange_name == "paper":
-                # Mock ticker data for paper trading
-                base_prices = {"BTC/USDT": 45000, "ETH/USDT": 3000, "ADA/USDT": 0.5}
+                # Mock ticker data for paper trading with UK focus
+                base_prices = {
+                    # GBP pairs (UK priority)
+                    "BTC/GBP": 35000, "ETH/GBP": 2400, "ADA/GBP": 0.38,
+                    # USDT pairs
+                    "BTC/USDT": 45000, "ETH/USDT": 3000, "ADA/USDT": 0.5
+                }
                 base_price = base_prices.get(symbol, 100)
                 # Add some random variation
                 import random
@@ -285,14 +325,41 @@ class ExchangeManager:
         return None
 
     async def get_trading_symbols(self, exchange_name: str) -> List[str]:
-        """Get list of tradeable symbols"""
+        """Get list of tradeable symbols with UK optimization"""
         try:
             exchange = self.exchanges.get(exchange_name)
             if exchange:
                 if exchange_name == "paper":
-                    return list(exchange.markets.keys())
+                    # Enhanced paper trading symbols for UK
+                    return [
+                        "BTC/GBP", "ETH/GBP", "ADA/GBP", "DOT/GBP",  # GBP pairs
+                        "BTC/USDT", "ETH/USDT", "ADA/USDT"  # USDT pairs
+                    ]
+                
                 markets = await exchange.load_markets()
-                return [symbol for symbol in markets.keys() if "/USDT" in symbol]
+                symbols = []
+                
+                # Prioritize GBP pairs for UK users
+                gbp_pairs = [symbol for symbol in markets.keys() if "/GBP" in symbol]
+                usdt_pairs = [symbol for symbol in markets.keys() if "/USDT" in symbol]
+                
+                # Add GBP pairs first (UK priority)
+                symbols.extend(gbp_pairs)
+                
+                # Add popular USDT pairs
+                popular_usdt = ["BTC/USDT", "ETH/USDT", "ADA/USDT", "DOT/USDT", "MATIC/USDT"]
+                for symbol in popular_usdt:
+                    if symbol in usdt_pairs and symbol not in symbols:
+                        symbols.append(symbol)
+                
+                # Add remaining USDT pairs
+                for symbol in usdt_pairs:
+                    if symbol not in symbols:
+                        symbols.append(symbol)
+                
+                self.logger.info(f"Found {len(gbp_pairs)} GBP pairs and {len(usdt_pairs)} USDT pairs on {exchange_name}")
+                return symbols
+                
         except Exception as e:
             self.logger.error(f"Error getting symbols from {exchange_name}: {e}")
 

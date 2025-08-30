@@ -1,45 +1,67 @@
 {
   "trading": {
     "daily_loss_limit": 100.0,
-    "max_position_size": 0.05,
+    "max_position_size": 0.02,
     "enable_arbitrage": true,
     "enable_momentum": true,
     "target_profit_arbitrage": 0.005,
-    "target_profit_momentum": 0.02
+    "target_profit_momentum": 0.02,
+    "base_currency": "GBP",
+    "preferred_pairs": ["BTC/GBP", "ETH/GBP", "ADA/GBP", "DOT/GBP", "BTC/USDT", "ETH/USDT"],
+    "timezone": "Europe/London",
+    "demo_mode": false,
+    "uk_market_hours": {
+      "start": "08:00",
+      "end": "17:00",
+      "weekend_trading": true
+    }
   },
   "exchanges": {
+    "kraken": {
+      "enabled": true,
+      "api_key": "",
+      "api_secret": "",
+      "testnet": true,
+      "priority": 1,
+      "uk_regulated": true,
+      "gbp_pairs": ["BTC/GBP", "ETH/GBP", "ADA/GBP", "DOT/GBP"],
+      "description": "UK FCA-regulated exchange with GBP support"
+    },
     "binance": {
       "enabled": false,
       "api_key": "",
       "api_secret": "",
-      "testnet": true
+      "testnet": true,
+      "priority": 2,
+      "uk_regulated": false,
+      "uk_available": false,
+      "status": "Service suspended in UK (August 2025)",
+      "description": "Currently unavailable - regulatory reorganization"
     },
     "coinbase": {
-      "enabled": false,
+      "enabled": true,
       "api_key": "",
       "api_secret": "",
-      "testnet": true
-    },
-    "kraken": {
-      "enabled": false,
-      "api_key": "",
-      "api_secret": "",
-      "testnet": true
+      "testnet": true,
+      "priority": 3,
+      "uk_regulated": true,
+      "gbp_pairs": ["BTC/GBP", "ETH/GBP"],
+      "description": "UK-regulated alternative to Kraken"
     }
   },
   "notifications": {
     "telegram": {
-      "enabled": true,
-      "bot_token": "434",
-      "chat_id": "434"
+      "enabled": false,
+      "bot_token": "",
+      "chat_id": ""
     },
     "discord": {
-      "enabled": true,
-      "webhook_url": "n"
+      "enabled": false,
+      "webhook_url": ""
     },
     "email": {
-      "enabled": false,
-      "smtp_server": "",
+      "enabled": true,
+      "smtp_server": "smtp.gmail.com",
       "smtp_port": 587,
       "username": "",
       "password": "",
