@@ -8,7 +8,7 @@ import sys
 import traceback
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, Optional, Type, Union
+from typing import Any, Callable, Dict, Optional, Type
 
 
 class ErrorSeverity(Enum):
@@ -334,7 +334,7 @@ def monitor_performance(metric_name: str):
                 execution_time = time.time() - start_time
                 wrapper._monitor.record_metric(metric_name, execution_time)
                 return result
-            except Exception as e:
+            except Exception:
                 execution_time = time.time() - start_time
                 wrapper._monitor.record_metric(f"{metric_name}_error", execution_time)
                 raise

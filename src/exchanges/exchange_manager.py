@@ -3,11 +3,9 @@ Exchange Manager for Auto Profit Trader
 Manages connections to multiple cryptocurrency exchanges using CCXT
 """
 
-import asyncio
-import logging
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import ccxt.async_support as ccxt
 
@@ -92,17 +90,22 @@ class ExchangeManager:
 
         # Check if demo mode is requested
         demo_mode = self.config_manager.get_section("trading").get("demo_mode", False)
-        
+
         if demo_mode:
             # Use realistic demo Kraken
             try:
                 from demo.demo_kraken import DemoKrakenExchange
+
                 demo_exchange = DemoKrakenExchange()
                 self.exchanges["demo_kraken"] = demo_exchange
-                self.logger.info("🇬🇧 Demo Kraken mode initialized with realistic UK trading")
+                self.logger.info(
+                    "🇬🇧 Demo Kraken mode initialized with realistic UK trading"
+                )
                 return
             except ImportError:
-                self.logger.warning("Demo mode not available, falling back to basic paper trading")
+                self.logger.warning(
+                    "Demo mode not available, falling back to basic paper trading"
+                )
 
         # Create a mock exchange for basic paper trading
         paper_exchange = type(
@@ -154,8 +157,11 @@ class ExchangeManager:
                     },
                 },
                 "paper_balance": {
-                    "GBP": 5000.0, "USDT": 5000.0, 
-                    "BTC": 0.0, "ETH": 0.0, "ADA": 0.0
+                    "GBP": 5000.0,
+                    "USDT": 5000.0,
+                    "BTC": 0.0,
+                    "ETH": 0.0,
+                    "ADA": 0.0,
                 },
             },
         )()
@@ -169,9 +175,13 @@ class ExchangeManager:
                 # Mock ticker data for paper trading with UK focus
                 base_prices = {
                     # GBP pairs (UK priority)
-                    "BTC/GBP": 35000, "ETH/GBP": 2400, "ADA/GBP": 0.38,
+                    "BTC/GBP": 35000,
+                    "ETH/GBP": 2400,
+                    "ADA/GBP": 0.38,
                     # USDT pairs
-                    "BTC/USDT": 45000, "ETH/USDT": 3000, "ADA/USDT": 0.5
+                    "BTC/USDT": 45000,
+                    "ETH/USDT": 3000,
+                    "ADA/USDT": 0.5,
                 }
                 base_price = base_prices.get(symbol, 100)
                 # Add some random variation
@@ -332,34 +342,47 @@ class ExchangeManager:
                 if exchange_name == "paper":
                     # Enhanced paper trading symbols for UK
                     return [
-                        "BTC/GBP", "ETH/GBP", "ADA/GBP", "DOT/GBP",  # GBP pairs
-                        "BTC/USDT", "ETH/USDT", "ADA/USDT"  # USDT pairs
+                        "BTC/GBP",
+                        "ETH/GBP",
+                        "ADA/GBP",
+                        "DOT/GBP",  # GBP pairs
+                        "BTC/USDT",
+                        "ETH/USDT",
+                        "ADA/USDT",  # USDT pairs
                     ]
-                
+
                 markets = await exchange.load_markets()
                 symbols = []
-                
+
                 # Prioritize GBP pairs for UK users
                 gbp_pairs = [symbol for symbol in markets.keys() if "/GBP" in symbol]
                 usdt_pairs = [symbol for symbol in markets.keys() if "/USDT" in symbol]
-                
+
                 # Add GBP pairs first (UK priority)
                 symbols.extend(gbp_pairs)
-                
+
                 # Add popular USDT pairs
-                popular_usdt = ["BTC/USDT", "ETH/USDT", "ADA/USDT", "DOT/USDT", "MATIC/USDT"]
+                popular_usdt = [
+                    "BTC/USDT",
+                    "ETH/USDT",
+                    "ADA/USDT",
+                    "DOT/USDT",
+                    "MATIC/USDT",
+                ]
                 for symbol in popular_usdt:
                     if symbol in usdt_pairs and symbol not in symbols:
                         symbols.append(symbol)
-                
+
                 # Add remaining USDT pairs
                 for symbol in usdt_pairs:
                     if symbol not in symbols:
                         symbols.append(symbol)
-                
-                self.logger.info(f"Found {len(gbp_pairs)} GBP pairs and {len(usdt_pairs)} USDT pairs on {exchange_name}")
+
+                self.logger.info(
+                    f"Found {len(gbp_pairs)} GBP pairs and {len(usdt_pairs)} USDT pairs on {exchange_name}"
+                )
                 return symbols
-                
+
         except Exception as e:
             self.logger.error(f"Error getting symbols from {exchange_name}: {e}")
 

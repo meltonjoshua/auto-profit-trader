@@ -155,9 +155,9 @@ class TestLogger:
 
             setup_logger(logger_name)
 
-            # Verify FileHandler was called with correct path
+            # Verify FileHandler was called with correct path and encoding
             expected_path = Path("logs") / f"{logger_name}.log"
-            mock_file_handler.assert_called_with(expected_path)
+            mock_file_handler.assert_called_with(expected_path, encoding='utf-8')
 
     @pytest.mark.parametrize(
         "log_level,should_log",
