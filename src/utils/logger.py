@@ -3,38 +3,39 @@ Logging utilities for Auto Profit Trader
 """
 
 import logging
-import sys
 import platform
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 
 
 class WindowsConsoleFormatter(logging.Formatter):
     """Custom formatter that removes emojis for Windows console compatibility"""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.is_windows = platform.system() == "Windows"
         # Regex pattern to match emoji characters
         self.emoji_pattern = re.compile(
             "["
-            "\U0001F600-\U0001F64F"  # emoticons
-            "\U0001F300-\U0001F5FF"  # symbols & pictographs
-            "\U0001F680-\U0001F6FF"  # transport & map symbols
-            "\U0001F1E0-\U0001F1FF"  # flags (iOS)
-            "\U00002702-\U000027B0"  # dingbats
-            "\U000024C2-\U0001F251"
-            "]+", flags=re.UNICODE
+            "\U0001f600-\U0001f64f"  # emoticons
+            "\U0001f300-\U0001f5ff"  # symbols & pictographs
+            "\U0001f680-\U0001f6ff"  # transport & map symbols
+            "\U0001f1e0-\U0001f1ff"  # flags (iOS)
+            "\U00002702-\U000027b0"  # dingbats
+            "\U000024c2-\U0001f251"
+            "]+",
+            flags=re.UNICODE,
         )
-    
+
     def format(self, record):
         formatted = super().format(record)
         if self.is_windows:
             # Remove emojis for Windows console
-            formatted = self.emoji_pattern.sub('', formatted)
+            formatted = self.emoji_pattern.sub("", formatted)
             # Clean up extra spaces
-            formatted = re.sub(r'\s+', ' ', formatted).strip()
+            formatted = re.sub(r"\s+", " ", formatted).strip()
         return formatted
 
 
@@ -68,11 +69,10 @@ def setup_logger(name: str) -> logging.Logger:
 
     # Create file handler with full emoji support
     file_handler = logging.FileHandler(
-        log_dir / f"{name}.log", 
-        encoding='utf-8'  # Ensure UTF-8 encoding for file logs
+        log_dir / f"{name}.log", encoding="utf-8"  # Ensure UTF-8 encoding for file logs
     )
     file_handler.setLevel(logging.DEBUG)
-    
+
     # Use regular formatter for file logs (keeps emojis)
     file_formatter = logging.Formatter(
         "%(asctime)s | %(name)s | %(levelname)s | %(message)s",

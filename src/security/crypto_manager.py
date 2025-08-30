@@ -3,13 +3,12 @@ Security utilities for Auto Profit Trader
 Handles API key encryption and secure credential management
 """
 
-import base64
 import json
 import logging
 import os
 import secrets
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from cryptography.fernet import Fernet, InvalidToken
 
@@ -47,7 +46,7 @@ class SecurityManager:
             SecurityError: If key creation fails
         """
         import platform
-        
+
         try:
             if not self.key_file.exists():
                 key = Fernet.generate_key()
@@ -67,7 +66,7 @@ class SecurityManager:
                         logger.info("Windows detected - file permissions handled by OS")
                     else:
                         logger.warning("Could not set file permissions")
-                        
+
                 logger.info("Generated new encryption key")
             else:
                 # Verify key file has secure permissions (skip on Windows)
@@ -155,11 +154,14 @@ class SecurityManager:
                 self.credentials_file.chmod(0o600)
             except (OSError, NotImplementedError):
                 import platform
+
                 if platform.system() == "Windows":
                     logger.debug("Windows detected - file permissions handled by OS")
                 else:
-                    logger.warning("Could not set secure permissions on credentials file")
-                    
+                    logger.warning(
+                        "Could not set secure permissions on credentials file"
+                    )
+
             logger.info("Encrypted and stored credentials for %s", exchange)
             return True
 

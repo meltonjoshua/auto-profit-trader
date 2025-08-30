@@ -4,9 +4,8 @@ Implements arbitrage and momentum trading strategies
 """
 
 import asyncio
-import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -622,7 +621,6 @@ class MomentumStrategy:
                     continue
 
                 current_price = ticker["last"]
-                entry_price = position["entry_price"]
 
                 # Check stop-loss
                 if current_price <= position["stop_price"]:

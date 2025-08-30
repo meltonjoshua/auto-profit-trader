@@ -8,7 +8,7 @@ import json
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List
 
 from utils.logger import setup_logger
 
@@ -104,7 +104,7 @@ class PortfolioManager:
             # Insert trade record
             cursor.execute(
                 """
-                INSERT INTO trades (timestamp, strategy, symbol, exchange, action, amount, 
+                INSERT INTO trades (timestamp, strategy, symbol, exchange, action, amount,
                                   price, cost, profit, profit_percentage, order_id, signal_confidence, notes)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -192,8 +192,8 @@ class PortfolioManager:
 
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO daily_stats 
-                (date, total_trades, winning_trades, losing_trades, daily_profit, 
+                INSERT OR REPLACE INTO daily_stats
+                (date, total_trades, winning_trades, losing_trades, daily_profit,
                  daily_volume, largest_win, largest_loss)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
@@ -280,8 +280,6 @@ class PortfolioManager:
 
     async def check_trading_limits(self) -> Dict:
         """Check if trading limits have been reached"""
-        metrics = await self.get_performance_metrics()
-
         limits = {"can_trade": True, "reasons": []}
 
         # Check daily trade limit
@@ -309,11 +307,11 @@ class PortfolioManager:
             start_date = (datetime.now() - timedelta(days=days)).isoformat()
 
             query = """
-                SELECT * FROM trades 
-                WHERE timestamp >= ? 
+                SELECT * FROM trades
+                WHERE timestamp >= ?
                 ORDER BY timestamp DESC
             """
-            
+
             if limit:
                 query += f" LIMIT {limit}"
 
@@ -406,7 +404,7 @@ Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
    • Daily Profit: ${metrics['daily_profit']:.2f}
    • Profit per Hour: ${metrics['profit_per_hour']:.2f}
    • Average per Trade: ${metrics['avg_profit_per_trade']:.2f}
-   
+
 📈 WIN/LOSS STATISTICS:
    • Win Rate: {metrics['win_rate']:.1f}%
    • Winning Trades: {metrics['winning_trades']}
